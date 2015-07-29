@@ -1,0 +1,19 @@
+- hosts: storage
+  sudo: True
+
+  tasks:
+    - command: /usr/bin/swift-init stop all
+
+    - mount: name=/srv/node/{{item}} src=/dev/{{item}} fstype=xfs state=unmounted
+      with_items: "{{devices}}"
+
+    #- filesystem: fstype=xfs dev=/dev/{{item}} # force=yes
+    #  with_items: "{{devices}}"
+
+    - mount: name=/srv/node/{{item}} src=/dev/{{item}} fstype=xfs state=mounted opts=rw,noatime,nodiratime,attr2,nobarrier,inode64,logbufs=8,noquota
+      with_items: "{{devices}}"
+
+    - file: path=/srv/node/{{item}} state=directory owner=swift group=swift
+      with_items: "{{devices}}"
+
+    - command: /usr/bin/swift-init start main

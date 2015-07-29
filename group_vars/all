@@ -1,0 +1,4 @@
+username: 'swift'
+group: 'swift'
+iface: '{{ ansible_enp0s8.ipv4.address }}'
+

@@ -1,0 +1,27 @@
+- name: clean up /etc/swift directory
+  file: path=/etc/swift state=absent
+
+- name: create clean /etc/swft directory
+  file: >
+    path=/etc/swift
+    owner={{ username }}
+    group={{ group }}
+    state=directory
+
+- name: create /var/cache/swift
+  file: >
+    path=/var/cache/swift
+    owner={{ username }}
+    group={{ group }}
+    state=directory
+
+- name: create /var/run/swift
+  file: >
+    path=/var/run/swift
+    owner={{ username }}
+    group={{ group }}
+    state=directory
+
+- name: copy over swift.conf file
+  template: src=swift.conf.j2 dest=/etc/swift/swift.conf owner={{ username }} group={{ group }} mode=0600
+

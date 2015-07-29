@@ -1,0 +1,11 @@
+- hosts: all
+  sudo: True
+  roles:
+    - common
+
+- hosts: swift
+  sudo: True
+  roles:
+    - swift_common
+    - swift_proxy
+    - swift_storage
