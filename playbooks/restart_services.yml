@@ -1,0 +1,11 @@
+- hosts: swift_proxy
+
+  tasks:
+    - name: start proxy services
+      command: /usr/bin/swift-init proxy-server restart
+
+- hosts: swift_storage
+
+  tasks:
+    - name: start storage services
+      command: /usr/bin/swift-init all restart

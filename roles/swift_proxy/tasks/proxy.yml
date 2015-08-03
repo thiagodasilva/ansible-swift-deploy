@@ -1,6 +1,6 @@
-# Note: Can't start the proxy yet
-- name: copy over proxy-server.conf
-  template: src=proxy-server.conf.j2 dest=/etc/swift/proxy-server.conf owner={{ username }} group={{ group }} mode=0640
-
 - name: copy over object-expirer.conf
   template: src=object-expirer.conf.j2 dest=/etc/swift/object-expirer.conf owner={{ username }} group={{ group }} mode=0640
+
+- name: copy over proxy-server.conf
+  template: src=proxy-server.conf.j2 dest=/etc/swift/proxy-server.conf owner={{ username }} group={{ group }} mode=0640
+  notify: Restart swift proxy services

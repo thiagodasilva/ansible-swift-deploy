@@ -3,9 +3,14 @@
   roles:
     - common
 
-- hosts: swift
+- hosts: swift_proxy
   sudo: True
   roles:
     - swift_common
     - swift_proxy
+
+- hosts: swift_storage
+  sudo: True
+  roles:
+    - swift_common
     - swift_storage

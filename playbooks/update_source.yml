@@ -1,0 +1,30 @@
+- hosts: all
+
+  tasks:
+    - name: stop all services
+      sudo: yes
+      command: /usr/bin/swift-init all stop
+      ignore_errors: yes
+
+    - name: update source
+      command: git pull
+      args:
+        chdir: ~/swift
+
+    - name: install source
+      sudo: yes
+      command: python setup.py install
+      args:
+        chdir: /home/swift/swift
+
+- hosts: swift_proxy
+
+  tasks:
+    - name: start proxy services
+      command: /usr/bin/swift-init proxy-server start
+
+- hosts: swift_storage
+
+  tasks:
+    - name: start storage services
+      command: /usr/bin/swift-init all start

@@ -1,7 +1,7 @@
 - name: clean up /etc/swift directory
   file: path=/etc/swift state=absent
 
-- name: create clean /etc/swft directory
+- name: create clean /etc/swift directory
   file: >
     path=/etc/swift
     owner={{ username }}

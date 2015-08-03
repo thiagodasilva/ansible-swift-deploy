@@ -37,3 +37,4 @@
 ## Maintenance
   * [ ] TODO: Disk clean-up
   * [ ] TODO: deploy new rings
+  * [x] update source, install and restart services

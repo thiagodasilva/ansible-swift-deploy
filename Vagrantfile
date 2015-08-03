@@ -2,25 +2,29 @@
 # vi: set ft=ruby :
 #
 
-NODES = 4
+PROXY_NODES = 1
+STORAGE_NODES = 4
 DISKS = 8
 
 Vagrant.configure("2") do |config|
     config.vm.box = "chef/centos-7.1"
     config.ssh.insert_key = false
 
-    # Make the client
-    config.vm.define :client do |client|
-        client.vm.network :private_network, ip: "192.168.10.90"
-        client.vm.host_name = "client"
-        client.vm.provider :virtualbox do |vb|
-            vb.memory = 1024
-            vb.cpus = 2
+    # Make the proxy nodes
+    (0..PROXY_NODES-1).each do |i|
+        config.vm.define "proxy#{i}" do |proxy|
+            proxy.vm.host_name = "proxy"
+            proxy.vm.host_name = "proxy#{i}"
+            proxy.vm.network :private_network, ip: "192.168.10.90"
+            proxy.vm.provider :virtualbox do |vb|
+                vb.memory = 1024
+                vb.cpus = 2
+            end
         end
     end
 
-    # Make the glusterfs cluster, each with DISKS number of drives
-    (0..NODES-1).each do |i|
+    # Make the storage nodes, each with DISKS number of drives
+    (0..STORAGE_NODES-1).each do |i|
         config.vm.define "storage#{i}" do |storage|
             storage.vm.hostname = "storage#{i}"
             storage.vm.network :private_network, ip: "192.168.10.10#{i}"
@@ -33,14 +37,16 @@ Vagrant.configure("2") do |config|
                 end
             end
 
-            if i == (NODES-1)
+            if i == (STORAGE_NODES-1)
                 # View the documentation for the provider you're using for more
                 # information on available options.
                 storage.vm.provision :ansible do |ansible|
                     ansible.limit = "all"
                     ansible.playbook = "site.yml"
+                    ansible.extra_vars = { username: 'vagrant', group: 'vagrant' }
                     ansible.groups = {
-                        "swift" => (0..NODES-1).map {|j| "storage#{j}"},
+                        "swift_storage" => (0..STORAGE_NODES-1).map {|j| "storage#{j}"},
+                        "swift_proxy" => (0..PROXY_NODES-1).map {|j| "proxy#{j}"},
                     }
                 end
             end

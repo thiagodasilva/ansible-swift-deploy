@@ -1,0 +1,10 @@
+- name: Restart swift proxy services
+  service:
+    name: "{{ item }}"
+    arguments: "/etc/swift/proxy-server.conf"
+    enabled: "yes"
+    state: "restarted"
+    pattern: "{{ item }}"
+  register: service_restart
+  with_items: swift_proxy_program_names
+  failed_when: false
