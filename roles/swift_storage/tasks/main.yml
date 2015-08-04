@@ -1,1 +1,2 @@
+- include: prepare_disks.yml
 - include: storage.yml

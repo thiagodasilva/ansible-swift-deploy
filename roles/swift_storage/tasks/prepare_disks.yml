@@ -1,0 +1,28 @@
+- name: prepare disks - mklabel
+  sudo: yes
+  command: parted -s /dev/{{ item }} mklabel gpt
+  with_items: "{{ all_devices }}"
+
+- name: prepare disks - mkpart
+  sudo: yes
+  command: parted -a optimal -s /dev/{{ item }} mkpart primary 0% 100%
+  with_items: "{{ all_devices }}"
+
+- name: format disks
+  sudo: yes
+  filesystem: fstype=xfs dev=/dev/{{item}}1 force=yes
+  with_items: "{{ all_devices }}"
+
+- name: assure directories exists
+  sudo: yes
+  file: path=/srv/node/{{item}}1 state=directory
+  with_items: "{{ all_devices }}"
+
+- name: mount devices
+  mount: name=/srv/node/{{item}}1 src=/dev/{{item}}1 fstype=xfs state=mounted opts=rw,noatime,nodiratime,attr2,nobarrier,inode64,logbufs=8,noquota
+  with_items: "{{ all_devices }}"
+
+- name: set correct permissions on mount point
+  sudo: yes
+  file: path=/srv/node/{{item}}1 state=directory owner={{ username }} group={{ group }}
+  with_items: "{{ all_devices }}"

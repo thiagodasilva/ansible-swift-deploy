@@ -36,20 +36,6 @@ Vagrant.configure("2") do |config|
                     vb.cpus = 2
                 end
             end
-
-            if i == (STORAGE_NODES-1)
-                # View the documentation for the provider you're using for more
-                # information on available options.
-                storage.vm.provision :ansible do |ansible|
-                    ansible.limit = "all"
-                    ansible.playbook = "site.yml"
-                    ansible.extra_vars = { username: 'vagrant', group: 'vagrant' }
-                    ansible.groups = {
-                        "swift_storage" => (0..STORAGE_NODES-1).map {|j| "storage#{j}"},
-                        "swift_proxy" => (0..PROXY_NODES-1).map {|j| "proxy#{j}"},
-                    }
-                end
-            end
         end
 
     end

@@ -8,7 +8,7 @@
   service: name=rsyncd state=restarted
 
 - name: copy over *-server.conf files
-  template: src={{ item }}-server.conf.j2 dest=/etc/swift/{{ item }}-server.conf owner=swift group=swift mode=0644
+  template: src={{ item }}-server.conf.j2 dest=/etc/swift/{{ item }}-server.conf owner={{ username }} group={{ group }} mode=0644
   with_items:
     - account
     - container

@@ -1,0 +1,59 @@
+  - name: installing dependencies
+    yum: name={{ item }} state=present
+    with_items:
+      - curl
+      - gcc
+      - memcached
+      - rsync
+      - sqlite
+      - xfsprogs
+      - git
+      - git-core
+      - libffi-devel
+      - xinetd
+      - python-setuptools
+      - python-coverage
+      - python-devel
+      - python-nose
+      - python-simplejson 
+      - pyxattr
+      - python-eventlet
+      - python-greenlet
+      - python-paste-deploy
+      - python-netifaces
+      - python-pip
+      - python-dns
+      - python-mock
+      - tree
+      - vim
+
+  - name: install python modules with pip
+    pip: name={{ item }} state=present
+    with_items:
+      - tox
+      - nose
+      - xattr
+      - git-review
+
+  - name: check if swift is already cloned
+    stat: path={{ source_dir }}/swift
+    register: swift_cloned
+
+  - name: git clone swift
+    git: repo=https://github.com/openstack/swift.git dest={{ source_dir }}/swift
+    when: not swift_cloned.stat.exists
+
+  - name: install swift's dependencies
+    pip: requirements={{ source_dir }}/swift/requirements.txt
+
+  - name: install swift's test dependencies
+    pip: requirements={{ source_dir }}/swift/test-requirements.txt
+
+  - name: build a development installation of swift
+    command: python setup.py install chdir={{ source_dir }}/swift
+
+  - name: set correct ownership of repos
+    file: path={{ source_dir }}/{{ item }} owner={{ username }} group={{ group }} recurse=yes
+    with_items:
+      - swift
+

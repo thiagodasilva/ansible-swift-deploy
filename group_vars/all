@@ -1,4 +1,6 @@
-username: 'swift'
-group: 'swift'
+install_from_source: yes
+source_dir: ""
+username: 'vagrant'
+group: 'vagrant'
 iface: '{{ ansible_enp0s8.ipv4.address }}'
 
